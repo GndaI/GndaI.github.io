@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Left and Right Layout</title>
+        <style>
+            
+
+            .container {
+                display: flex;
+            }
+            .left {
+                width: 50%;
+                align-items: center;
+                background-color: white;
+            }
+            .right {
+                width: 100%;
+                background-color: lightgreen;
+            }
+            @media screen and (max-width: 600px) {
+                .container {
+                    flex-direction: column; /* 세로 방향으로 요소를 배치 */
+                }
+                .left, .right  {
+                    width:100%
+                }   
+}
+        </style>
+    </head>
+<body>
+<div class="container">
+<div class="left">
+<h1>계산기</h1>
+<pre>
+<select name="level" id="level" onchange="updateSecondSelect(this)">
+    <option value="">레벨 선택</option>
+    <option value="25">25</option>
+    <option value="26">26</option>
+    <option value="27">27</option>
+    <option value="28">28</option>
+    <option value="29">29</option>
+    <option value="30">30</option>
+    <option value="31">31</option>
+    <option value="32">32</option>
+    <option value="33">33</option>
+    <option value="34">34</option>
+    <option value="35">35</option>
+    <option value="36">36</option>
+    <option value="37">37</option>
+</select>
+
+<select id = "song" onchange="SongSelected(this)">
+    <option value="test">먼저 레벨을 선택해 주세요.</option>
+</select>
+
+<label>Perfect <input type="Number" id="Perfect" size="10" disabled><br></label>
+<label>Great   <input type="Number" id="Great" size="10" onchange="Input(this)" disabled><br></label>
+<label>Good    <input type="Number" id="Good" size="10" onchange="Input(this)" disabled><br></label>
+<label>Bad     <input type="Number" id="Bad" size="10" onchange="Input(this)" disabled><br></label>
+<label>Miss    <input type="Number" id="Miss" size="10" onchange="Input(this)" disabled></label>
+
+<button id="button" disabled>계산</button> <button id="reset" onclick="reset()" disabled>초기화</button>
+<div id='result'></div>
+<div id="potential"></div>
+
+<button id="confirm"  onclick="Confirm()" disabled>결정</button>
+
+<div id="sektential"></div>
+
+</pre>
+
+<script>
+const data = `25,25.25,25시의 정열,725
+26,25.75,Tell Your World,1147
+27,27.125,alive,1016
+26,26.4,いちにのさんで,715
+26,26,夜明けと蛍,852
+26,25.5,Where shall we go?,735
+26,26,エピローグに君はいない,625
+26,26.25,インタビュア,1097
+27,27.25,タイムマシン,903
+27,26.8,from Y to Y,982
+26,26,ray,1092
+27,26.8,心拍数♯0822,843
+26,25.75,アサガオの散る頃に,812
+27,26.8,ニア,841
+27,27.25,メルティランドナイトメア,959
+26,26.4,ECHO,805
+27,26.8,ハロ／ハワユ,851
+26,25.75,自傷無色,829
+26,26.2,独りんぼエンヴィー,589
+26,26.2,メリュー,983
+26,26,泥中に咲く,761
+26,26.4,それがあなたの幸せとしても,814
+27,26.6,「１」,814
+26,26,オーダーメイド,601
+26,26,アイノマテリアル,814
+26,25.75,メタモリボン,685
+26,26.2,カナデトモスソラ,703
+26,26.4,再生,547
+26,26.2,ノマド,592
+26,26.2,君の夜をくれ,662
+27,27.125,Blessing,986
+28,27.75,Hand in Hand,1072
+27,26.8,on the rocks,1004
+27,27.375,愛されなくても君がいる,1075
+27,27.375,炉心融解,1167
+27,26.6,悪ノ娘,784
+27,26.6,悪ノ召使,784
+27,27,砂の惑星,1062
+27,27,千年の独奏歌,906
+27,27.125,ブラック★ロックシューター,930
+27,27,ダブルラリアット,1115
+26,25.5,Goodbye,860
+26,25.75,Copycat,997
+28,27.875,Highlight,690
+27,27.25,眠らせ姫からの贈り物,1003
+27,27.125,Afterglow,844
+27,27.125,青く駆けろ！,1048
+28,27.875,ウミユリ海底譚,833
+26,26.2,glow,987
+28,28,ツギハギスタッカート,861
+28,28,恋愛裁判,1149
+27,27.25,どりーみんチュチュ,1074
+28,28,ロミオとシンデレラ,1035
+27,27,からくりピエロ,1005
+27,27,少女レイ,1400
+27,26.8,トリノコシティ,852
+27,27.125,ロンリーユニバース,999
+27,27.375,深海少女,994
+28,28.25,フラジール,1040
+28,27.75,Just Be Friends,989
+27,27.5,幽霊東京,1053
+27,27,スイートマジック,1224
+28,27.75,シャルル,824
+28,28.25,乙女解剖,1002
+27,27.125,妄想感傷代償連盟,966
+27,27,青色絵具,1058
+26,26.4,相生,1232
+28,28.25,Color of Drops,918
+27,27.125,アイスドロップ,802
+27,26.8,イフ,1062
+27,27.125,フロート・プランナー,832
+27,27.25,私は、私達は,918
+27,27,街,769
+27,26.8,虚ろを扇ぐ,1112
+28,28.125,ワンスアポンアドリーム,871
+27,26.8,星空のメロディー,821
+27,27,箱庭のコラル,981
+27,27,セカイ,858
+27,27.125,群青讃歌,833
+29,28.875,メルト,1586
+29,28.75,ワールドイズマイン,1417
+28,27.75,39みゅーじっく！,1039
+29,28.875,Leia - Remind,1155
+29,29.125,＊ハロー、プラネット。,1076
+29,29,ブレス・ユア・ブレス,873
+28,28.125,ヒビカセ,1019
+28,28.125,みくみくにしてあげる♪【してやんよ】,939
+28,28.125,トキヲ・ファンカ,859
+29,29.25,サンドリヨン 10th Anniversary,913
+28,28,ジウダス,898
+29,28.875,Miku,1106
+28,28,こちら、幸福安心委員会です。,1096
+28,28.125,Change me,1247
+28,28.125,パラジクロロベンゼン,1063
+28,28.125,陽だまりのセツナ,1105
+28,28.5,天使の翼。,1340
+28,28.375,ココロ,1090
+28,27.875,ストロボラスト,866
+28,28.375,パレットには君がいっぱい,966
+28,27.875,Q,998
+28,27.875,39,1339
+28,27.875,円尾坂の仕立屋,1007
+28,27.75,悪徳のジャッジメント,983
+27,26.8,Sharing The World,1122
+28,27.875,Wonder Style,1013
+28,28,心拍ペアリング,696
+29,28.875,ロキ,975
+29,28.75,アスノヨゾラ哨戒班,1208
+29,29.25,ドラマツルギー,862
+28,28,僕らまだアンダーグラウンド,1035
+28,27.75,夜もすがら君想ふ,1190
+28,28,"Hello, Worker",918
+28,27.875,ハッピーシンセサイザ,1136
+29,28.875,Nostalogic,985
+29,28.75,ビバハピ,1019
+28,28,心予報,1060
+29,29.25,drop pop candy,902
+28,28.375,威風堂々,1166
+28,28.125,トラフィック・ジャム,1089
+28,28.375,ガランド,943
+29,29,阿吽のビーツ,918
+28,28.375,帝国少女,1178
+28,27.875,絶え間なく藍色,1089
+29,28.75,お気に召すまま,988
+28,27.875,いーあるふぁんくらぶ,1002
+28,28.125,踊れオーケストラ,1068
+29,28.875,ラブカ？,878
+28,28.25,1925,1117
+28,28,太陽系デスコ,1188
+28,28.5,とても痛い痛がりたい,915
+29,29.375,ボッカデラベリタ,1119
+29,29,カトラリー,806
+28,28.25,うっせぇわ,1302
+28,28.125,愛して愛して愛して,1173
+28,28.375,アイロニ,943
+28,28.25,命ばっかり,1092
+28,27.875,去り人達のワルツ,798
+28,27.875,フロムトーキョー,814
+28,28.25,Peaky Peaky,855
+29,28.875,Flyway,1088
+28,28.25,星を繋ぐ,821
+29,28.75,アイドル新鋭隊,940
+28,28.25,ワールドワイドワンダー,785
+29,28.75,DREAM PLACE,1172
+28,28.5,Forward,895
+29,28.75,Beat Eater,798
+28,27.75,ミライ,1281
+28,28.375,仮死化,1186
+28,28.25,ひつじがいっぴき,1305
+29,29,potatoになっていく,863
+28,28.25,どんな結末がお望みだい？,835
+29,29,星空オーケストラ,1159
+28,28.125,アイディスマイル,1247
+28,28.25,トリコロージュ,999
+28,27.525,演劇,984
+29,28.875,ワーワーワールド,960
+29,29.125,Journey,1322
+30,30,ネクストネスト,1131
+29,29.25,Gimme×Gimme,907
+30,30,アンノウン・マザーグース,1292
+29,29,ODDS＆ENDS,921
+30,29.875,泡沫未来,903
+29,29.125,だれかの心臓になれたなら,1044
+29,29.125,ドーナツホール,1328
+29,28.875,ルカルカ★ナイトフィーバー,1311
+29,29.125,それでもいいんだよ,1009
+29,29,Bad ∞ End ∞ Night,1018
+30,30.125,星屑ユートピア,1308
+29,29.125,あったかいと,1376
+29,29.125,カンタレラ,1063
+29,28.525,FREELY TOMORROW,1121
+30,30,リンちゃんなう！,1409
+29,29,p.h.,872
+29,29.375,スノーマン,1243
+29,29.25,名もない革命,1099
+29,29.25,悪食娘コンチータ,851
+29,29,Blue Star,1163
+29,28.625,UNDERWATER,1062
+29,29.5,いかないで,1173
+29,29.125,"Hello,world!",949
+29,29.5,ロストエンファウンド,1271
+29,29.5,天ノ弱,1131
+29,29.5,快晴,1533
+29,29.25,マシュマリー,1303
+30,29.75,ヴァンパイア,1299
+29,29.125,Booo!,860
+29,29.125,踊,1083
+29,28.75,雨とペトラ,1206
+29,29.125,PaⅢ.SENSATION,1244
+29,29.375,YY,1175
+29,29.125,DAYBREAK FRONTLINE,1179
+30,30.125,ブリキノダンス,967
+30,30,ダンスロボットダンス,1057
+30,29.75,ミラクルペイント,1437
+30,30.125,KING,1251
+29,29,テレキャスタービーボーイ,898
+29,29.25,ナンセンス文学,1180
+29,28.875,リモコン,1206
+29,28.875,神のまにまに,1111
+29,29.25,エイリアンエイリアン,1361
+29,29.5,嗚呼、素晴らしきニャン生,1374
+30,29.875,命に嫌われている,979
+30,29.875,夜に駆ける,1140
+29,29.125,ベノム,1138
+29,29.125,ヴィラン,1154
+29,29.25,フォニイ,1244
+29,28.75,とても素敵な六月でした,1491
+30,30.125,magic number,988
+29,29,needLe,1029
+29,29.375,Ready Steady,667
+29,29.5,シネマ,800
+29,29.125,Flyer!,1083
+29,29,月光,1159
+29,29,セカイはまだ始まってすらいない,1027
+29,29.375,ニジイロストーリーズ,1054
+29,29.375,88☆彡,1188
+29,29,携帯恋話,1131
+29,29.25,ジャックポットサッドガール,767
+29,29.125,Be The MUSIC!,1247
+30,30,裏表ラバーズ,1151
+30,30,ワールズエンド・ダンスホール,1044
+30,30.25,花を唄う,878
+30,30.375,しっくおぶはうす！,1313
+30,30.125,ラストスコア,1190
+30,29.75,マトリョシカ,1104
+30,29.75,ピアノ×フォルテ×スキャンダル,1142
+30,30.125,ONESELF,1163
+30,30.25,SnowMix♪,1441
+30,30,レイニースノードロップ,1495
+30,29.875,METEOR,1323
+31,30.75,魔法みたいなミュージック！,1271
+30,30,エターナルアリア,1364
+30,30.125,スターダストメドレー,1366
+30,30.125,Decade,1057
+30,30.125,Calc.,1295
+30,29.875,アトラクトライト,1455
+30,30.25,ミルククラウン・オン・ソーネチカ,1226
+31,30.875,Happy Halloween,987
+30,29.875,ダーリンダンス,912
+31,30.875,気まぐれメルシィ,1465
+30,29.875,劣等上等,952
+30,30,夜咄ディセイブ,1311
+31,30.75,悪魔の踊り方,938
+30,30,フェレス,1397
+30,30,シャンティ,1187
+30,30.25,グッバイ宣言,1259
+31,31,ネトゲ廃人シュプレヒコール,1463
+31,30.875,おこちゃま戦争,1394
+31,31,ジェヘナ,1253
+30,30.375,ノンブレス・オブリージュ,1203
+31,30.75,コスモスパイス,1092
+30,30.25,サラマンダー,1454
+30,29.875,ステラ,1190
+31,30.525,霽れを待つ,1160
+31,30.75,流星のパルス,1123
+30,30.125,STAGE OF SEKAI,1156
+30,30.125,てらてら,1262
+30,30,Voices,1237
+30,30.125,the WALL,1019
+30,30.375,フレー,1328
+30,30.375,パラソルサイダー,880
+31,30.75,ももいろの鍵,1187
+30,29.875,チームメイト,1090
+30,30.25,RAD DOGS,1197
+30,30,Awake Now,884
+30,29.875,下剋上,1245
+30,30.25,Glory Steady Go!,875
+31,31,Mr. Showtime,1497
+30,30.125,悔やむと書いてミライ,973
+31,30.75,限りなく灰色へ,849
+30,29.75,ザムザ,937
+31,30.875,ジャンキーナイトタウンオーケストラ,1374
+31,30.75,ローリンガール,1396
+31,31.333,グリーンライツ・セレナーデ,1174
+31,31,そうだった！！,1297
+31,30.75,右肩の蝶,1315
+31,31.333,君色マリンスノウ,1415
+31,30.875,未完成讃歌,1585
+31,31.333,フロイライン＝ビブリォチカ,1456
+31,30.875,アンハッピーリフレイン,1353
+31,30.875,トラッシュ・アンド・トラッシュ！,1181
+31,30.875,Vampire's ∞ pathoS,1100
+31,31.333,私の恋はヘルファイア,1638
+31,31.333,カゲロウデイズ,1404
+31,31.333,地球最後の告白を,1164
+31,30.75,きゅうくらりん,1148
+31,31.333,オルターエゴ,1557
+31,31.166,エゴイスト,1548
+31,30.75,脳内革命ガール,1269
+31,31.166,ぼうけんのしょがきえました！,1092
+31,31.166,脱法ロック,1145
+31,31,チュルリラ・チュルリラ・ダッダッダ！,1401
+31,31,ポジティブ☆ダンスタイム,1154
+31,31.333,フィクサー,1118
+31,31.166,エゴロック,1277
+31,31.333,ビターチョコデコレーション,1377
+31,30.75,アイデンティティ,1489
+31,31.333,徳川カップヌードル禁止令,1241
+31,30.875,モア！ジャンプ！モア！,1257
+31,31,天使のクローバー,1235
+31,31,ショウタイム・ルーラー,1063
+31,30.75,にっこり^^調査隊のテーマ,1195
+31,31.166,ロウワー,850
+31,31,Iなんです,1066
+31,30.75,キティ,982
+32,31.833,千本桜,1257
+32,32,Brand New Day,1316
+32,32,拝啓ドッペルゲンガー,1654
+33,32.75,初音天地開闢神話,2021
+32,32,脳漿炸裂ガール,1500
+32,32,フューチャー・イヴ,1628
+32,32,インビジブル,1436
+32,32.25,星界ちゃんと可不ちゃんのおつかい合騒曲,1626
+32,31.666,テオ,1221
+32,32.25,ヒバナ -Reloaded-,1060
+33,32.75,ロストワンの号哭,1157
+33,33,ゴーストルール,1473
+32,32,セツナトリップ,1370
+32,31.833,ドクター＝ファンクビート,1198
+32,31.833,チルドレンレコード,1502
+32,32,トンデモワンダーズ,1224
+32,31.666,バグ,1343
+34,34,初音ミクの激唱,1742
+33,33,ぼくらの16bit戦争,1521
+34,34,腐れ外道とチョコレゐト,1763
+35,35,六兆年と一夜物語,1288
+35,35,マシンガンポエムドール,1819
+34,34,ÅMARA(大未来電脳),1589
+35,35,初音ミクの消失,1666
+35,35,エンドマークに希望と涙を添えて,1948
+36,36,the EmpErroR,1593
+35,35,Don't Fight The Music,1888
+37,37,What's up? Pop!,2362
+37,37.25,ヤミナベ!!!!,2015
+37,36.75,人生,2242
+28,28.125,我らステインバスターズ！,810
+31,30.875,新人類,1298
+31,31.125,ずんだパーリナイ,1522
+30,30.25,Disco No.39,1115
+28,28.125,サマータイムレコード,1404
+29,29.25,リアライズ,851
+27,27,キラピピ★キラピカ,909
+28,28,ボトルケーキ,759
+26,25.75,心做し,832
+30,30.25,ブループラネット,1357
+31,31,HERO,1278
+32,32,CIRCUS PANIC!!!,1239
+29,29.375,白い雪のプリンセスは,1478
+28,28.125,Un-Lock,1069
+28,28,ラッキー☆オーブ,919
+29,28.875,NEO,988
+29,29.375,アイムマイン,1189
+29,29.25,天樂,1554
+29,28.875,まにまに,1014
+27,27,メランコリック,1100
+28,28,豚になってyeah yeah,778
+27,27.25,恋は戦争,1262
+29,29,デビルじゃないもん,879
+31,30.75,すきなことだけでいいです,1223
+27,27,番凩,892
+29,29.25,神っぽいな,1162
+28,28.125,Dear,1233
+28,28.25,CR詠ZY,728
+29,29,Cool Me Down,1250
+29,29,悪役にキスシーンを,1188
+30,29.75,我儘姫,1188
+28,27.75,purpose,812
+29,28.875,はぐ,983
+26,26.4,トワイライトライト,619
+30,29.875,春嵐,1184
+31,30.75,ARQETYPE,951
+27,26.6,On&On,859
+30,29.75,キュートなカノジョ,1208
+29,28.875,フィラメントフィーバー,952
+30,29.75,さよならプリンセス,1131
+28,27.875,Beyond the way,900
+30,29.875,ショウタイム×オーディエンス,1220
+30,29.875,難聴系男子が倒せない,1234
+30,30.125,オーバーコード,1253
+30,30,スロウダウナー,1418
+29,29,初めての恋が終わる時,995
+29,28.75,金木犀,899
+30,30,一千光年,1141
+28,27.875,強風オールバック,955
+31,30.875,ヒアソビ,1116
+28,28,エンヴィーベイビー,1251
+28,27.875,『んっあっあっ。』,1071
+29,29.125,くうになる,945
+28,27.525,ハイドアンド・シーク,898
+32,32,folern,1486
+27,26.6,MOTTO!!!,1067
+32,31.833,Sage,1812
+31,30.875,心泥夢(syndrome),1383
+30,29.875,サイバーパンクデッドボーイ,1014
+33,32.75,MarbleBlue.,1460
+29,28.75,マーシャル・マキシマイザー,895
+30,30.125,え？あぁ、そう。,1028
+30,30,リレイアウター,1203
+29,29,おどロボ,1339
+31,31,世界を照らすテトラッド,1072
+26,26,ハッピーチートデー,817
+31,31,十六歳の心臓,1470
+31,31,limbo,958
+29,29,レグルス,1014
+28,28,古書屋敷殺人事件,974`;
+let data3 = data.split('\n').map(item => item.split(','));
+let yes = true;
+let data2
+let total = 0;
+let potential = 0;
+let songname = '';
+let songID = 0;
+let result;
+let level;
+let add = 0;
+let songdata
+var Right = document.createElement("div");
+Right.classList.add("right");
+Right.textContent = "기록";
+Right.id = "right"
+document.body.appendChild(Right);
+if(localStorage.getItem("song") !== null && localStorage.getItem("song") !== undefined && localStorage.getItem("song") !== ''){
+    songdata = JSON.parse(localStorage.getItem("song"));
+}
+if(songdata){
+let Newsongdata = songdata.slice()
+Newsongdata.sort((a, b) => b[10] - a[10]);
+Newsongdata.forEach( item => {
+  if(item[1] !== 0 && item[1] !== null){
+    add += item[10]
+    let container = document.createElement("div");
+    let label = document.createElement("label");
+    label.textContent = item[1] + "(" + item[7] + ") => " + item[10];
+    container.classList.add("container");
+    let load = document.createElement("button");
+    let deletebutton = document.createElement("button");
+    load.textContent = "불러오기";
+    load.setAttribute("data-ID", item[0])
+    load.onclick = function() {
+      document.getElementById("level").value = songdata[parseInt(this.getAttribute("data-ID"))][9];
+      updateSecondSelect(document.getElementById("level"))
+      document.getElementById("song").value = parseInt(this.getAttribute("data-ID"));
+      document.getElementById('Perfect').value = songdata[parseInt(this.getAttribute("data-ID"))][2];
+      document.getElementById('Great').value = songdata[parseInt(this.getAttribute("data-ID"))][3];
+      document.getElementById('Good').value = songdata[parseInt(this.getAttribute("data-ID"))][4];
+      document.getElementById('Bad').value = songdata[parseInt(this.getAttribute("data-ID"))][5];
+      document.getElementById('Miss').value = songdata[parseInt(this.getAttribute("data-ID"))][6];
+    }
+    deletebutton.textContent = "삭제"
+    deletebutton.setAttribute("data-ID", item[0])
+    deletebutton.onclick = function() {
+      if(confirm("정말로 이 기록을 삭제하시겠습니까?")){
+        deletebutton.parentNode.remove();
+        songdata[parseInt(this.getAttribute("data-ID"))].fill(null);
+        localStorage.setItem("song",JSON.stringify(songdata, (key, value) => value === null ? 0 : value))
+      }
+    }
+    container.appendChild(label);
+    container.appendChild(load);
+    container.appendChild(deletebutton);
+    document.getElementById("right").appendChild(container);
+  }
+})}
+else{
+    songdata = new Array(1000).fill(0).map(() => new Array(11))
+}
+document.getElementById("sektential").innerText = "당신의 셐텐셜 = " + add/50;
+const button = document.getElementById("button");
+const secondSelect = document.getElementById("song");
+
+button.onclick = function () {
+  let Perfect = document.getElementById('Perfect').value;
+  let Great = document.getElementById('Great').value;
+  let Good = document.getElementById('Good').value;
+  let Bad = document.getElementById('Bad').value;
+  let Miss = document.getElementById('Miss').value;
+  result = Math.floor((Number(Perfect) + Number(Great)/2 + Number(Good)/4 + Number(Bad)/8)/(Number(Perfect) + Number(Great) + Number(Good) + Number(Bad) + Number(Miss)) * 10000000);
+  if(result < songdata[songID][7]){
+    document.getElementById("result").innerText = result + " (" + (result - songdata[songID][7]) + ")"
+  }
+  else{
+    document.getElementById("result").innerText = result + " (+" + (result - songdata[songID][7]) + ")"
+  }
+  document.getElementById("confirm").disabled = false;
+  if(Number(result)>=9800000){
+    document.getElementById("potential").innerText = (Number(potential) + 1 + Number((result - 9800000)/200000)).toFixed(2);
+  }
+  else{
+    document.getElementById("potential").innerText = (Number(potential) + Number((result - 9500000)/300000)).toFixed(2);
+  }
+}
+
+function updateSecondSelect(select) {
+    yes = true;
+    level = select.value;
+    secondSelect.innerHTML = '';
+    let repeat = 0;
+    data2 = data3.slice()
+    data2.sort((a, b) => {
+        const numA = a[1];
+        const numB = b[1];
+        if (isNaN(numA)) return -1;
+        if (isNaN(numB)) return 1;
+        return numA - numB;
+    });
+    data2.forEach(row => {
+        if(data2[repeat][0] === level){
+            secondSelect.add(new Option(row[2] + '(' + row[1] + ')', repeat));
+        }
+        repeat += 1;
+    });
+    SongSelected(document.getElementById("song"))
+}
+
+function SongSelected(select) {
+    songID = select.value;
+    potential = data2[songID][1];
+    songname = data2[songID][2];
+    total = data2[select.value][3];
+    document.getElementById('Perfect').value = total;
+    document.getElementById('Great').value = 0;
+    document.getElementById('Good').value = 0;
+    document.getElementById('Bad').value = 0;
+    document.getElementById('Miss').value = 0;
+    document.getElementById("Great").disabled = false;
+    document.getElementById("Good").disabled = false;
+    document.getElementById("Bad").disabled = false;
+    document.getElementById("Miss").disabled = false;
+    document.getElementById("button").disabled = false;
+    document.getElementById("reset").disabled = false;
+    document.getElementById("confirm").disabled = true;
+    document.getElementById('result').innerText = '';
+    document.getElementById('potential').innerText = '';
+}
+
+function Input(input){
+    if(input.value < 0){
+        input.value = 0;
+    }
+    document.getElementById('Perfect').value = total - document.getElementById('Great').value - document.getElementById('Good').value - document.getElementById('Bad').value - document.getElementById('Miss').value;
+    if(total - document.getElementById('Great').value - document.getElementById('Good').value - document.getElementById('Bad').value - document.getElementById('Miss').value < 0){
+        input.value = Number(input.value) + Number(document.getElementById('Perfect').value);
+        document.getElementById('Perfect').value = 0;
+    }
+}
+
+function reset(){
+    document.getElementById('Perfect').value = total;
+    document.getElementById('Great').value = 0;
+    document.getElementById('Good').value = 0;
+    document.getElementById('Bad').value = 0;
+    document.getElementById('Miss').value = 0;
+    document.getElementById("confirm").disabled = true;
+    document.getElementById('result').innerText = '';
+    document.getElementById('potential').innerText = '';
+}
+
+function Confirm(){
+    if (confirm("이 결과를 등록하시겠습니까?")){
+    songdata[songID][0] = document.getElementById("song").value
+    songdata[songID][1] = songname
+    songdata[songID][2] = document.getElementById("Perfect").value
+    songdata[songID][3] = document.getElementById("Great").value
+    songdata[songID][4] = document.getElementById("Good").value
+    songdata[songID][5] = document.getElementById("Bad").value
+    songdata[songID][6] = document.getElementById("Miss").value
+    songdata[songID][7] = result
+    songdata[songID][8] = potential
+    songdata[songID][9] = level
+    songdata[songID][10] = document.getElementById('potential').innerText
+    localStorage.setItem("song",JSON.stringify(songdata, (key, value) => value === null ? 0 : value));
+    document.getElementById('Perfect').value = total;
+    document.getElementById('Great').value = 0;
+    document.getElementById('Good').value = 0;
+    document.getElementById('Bad').value = 0;
+    document.getElementById('Miss').value = 0;
+    document.getElementById("confirm").disabled = true;
+    document.getElementById('result').innerText = '';
+    document.getElementById('potential').innerText = '';
+    alert("등록이 완료되었습니다. 새로고침 후 적용됩니다.")
+    }
+}
+
+</script>
+</div>
+</div>
+</body>
+</html>
