@@ -536,9 +536,9 @@ Newsongdata.forEach( item => {
   }
 })}
 else{
-    songdata = new Array(1000).fill(0).map(() => new Array(11))
+    songdata = new Array(1000).fill(0).map(() => new Array(11).fill(0))
 }
-document.getElementById("sektential").innerText = "당신의 셐텐셜 = " + add/50;
+document.getElementById("sektential").innerText = "top50 평균치 = " + add/50;
 const button = document.getElementById("button");
 const secondSelect = document.getElementById("song");
 
