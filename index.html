@@ -501,7 +501,7 @@ let Newsongdata = songdata.slice()
 Newsongdata.sort((a, b) => b[10] - a[10]);
 Newsongdata.forEach( item => {
   if(item[1] !== 0 && item[1] !== null){
-    add += item[10]
+    add += parseFloat(item[10])
     let container = document.createElement("div");
     let label = document.createElement("label");
     label.textContent = item[1] + "(" + item[7] + ") => " + item[10];
