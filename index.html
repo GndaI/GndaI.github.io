@@ -500,9 +500,13 @@ if(localStorage.getItem("song") !== null && localStorage.getItem("song") !== und
 if(songdata){
 let Newsongdata = songdata.slice()
 Newsongdata.sort((a, b) => b[10] - a[10]);
+let repeat = 0
 Newsongdata.forEach( item => {
   if(item[1] !== 0 && item[1] !== null){
-    add += parseFloat(item[10])
+    if(repeat < 51){
+        add += parseFloat(item[10])
+        repeat += 1
+    }
     let container = document.createElement("div");
     let label = document.createElement("label");
     label.textContent = item[1] + "(" + item[7] + ") => " + item[10];
