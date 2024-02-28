@@ -61,7 +61,7 @@
 <label>Bad     <input type="Number" id="Bad" size="10" onchange="Input(this)" disabled><br></label>
 <label>Miss    <input type="Number" id="Miss" size="10" onchange="Input(this)" disabled></label>
 
-<button id="button" disabled>계산</button> <button id="reset" onclick="reset()" disabled>초기화</button>
+<button id="reset" onclick="reset()" disabled>초기화</button>
 <div id='result'></div>
 <div id="potential"></div>
 
@@ -524,6 +524,8 @@ Newsongdata.forEach( item => {
       document.getElementById('Good').value = songdata[parseInt(this.getAttribute("data-ID"))][4];
       document.getElementById('Bad').value = songdata[parseInt(this.getAttribute("data-ID"))][5];
       document.getElementById('Miss').value = songdata[parseInt(this.getAttribute("data-ID"))][6];
+      click()
+      console.log(songdata)
     }
     deletebutton.textContent = "삭제"
     deletebutton.setAttribute("data-ID", item[0])
@@ -546,8 +548,9 @@ else{
 document.getElementById("sektential").innerText = "top50 평균치 = " + add/50;
 const button = document.getElementById("button");
 const secondSelect = document.getElementById("song");
-
-button.onclick = function () {
+document.getElementById('result').innerText = '';
+document.getElementById('potential').innerText = '';
+function click() {
   let Perfect = document.getElementById('Perfect').value;
   let Great = document.getElementById('Great').value;
   let Good = document.getElementById('Good').value;
@@ -595,7 +598,7 @@ function SongSelected(select) {
     songID = select.value;
     potential = data2[songID][1];
     songname = data2[songID][2];
-    total = data2[select.value][3];
+    total = data2[songID][3];
     document.getElementById('Perfect').value = total;
     document.getElementById('Great').value = 0;
     document.getElementById('Good').value = 0;
@@ -605,11 +608,11 @@ function SongSelected(select) {
     document.getElementById("Good").disabled = false;
     document.getElementById("Bad").disabled = false;
     document.getElementById("Miss").disabled = false;
-    document.getElementById("button").disabled = false;
     document.getElementById("reset").disabled = false;
     document.getElementById("confirm").disabled = true;
     document.getElementById('result').innerText = '';
     document.getElementById('potential').innerText = '';
+    click()
 }
 
 function Input(input){
@@ -621,6 +624,7 @@ function Input(input){
         input.value = Number(input.value) + Number(document.getElementById('Perfect').value);
         document.getElementById('Perfect').value = 0;
     }
+    click()
 }
 
 function reset(){
@@ -632,6 +636,7 @@ function reset(){
     document.getElementById("confirm").disabled = true;
     document.getElementById('result').innerText = '';
     document.getElementById('potential').innerText = '';
+    click()
 }
 
 function Confirm(){
@@ -648,15 +653,8 @@ function Confirm(){
     songdata[songID][9] = level
     songdata[songID][10] = document.getElementById('potential').innerText
     localStorage.setItem("song",JSON.stringify(songdata, (key, value) => value === null ? 0 : value));
-    document.getElementById('Perfect').value = total;
-    document.getElementById('Great').value = 0;
-    document.getElementById('Good').value = 0;
-    document.getElementById('Bad').value = 0;
-    document.getElementById('Miss').value = 0;
-    document.getElementById("confirm").disabled = true;
-    document.getElementById('result').innerText = '';
-    document.getElementById('potential').innerText = '';
     alert("등록이 완료되었습니다. 새로고침 후 적용됩니다.")
+    window.location.reload()
     }
 }
 
