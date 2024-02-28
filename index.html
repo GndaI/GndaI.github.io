@@ -562,10 +562,10 @@ button.onclick = function () {
   }
   document.getElementById("confirm").disabled = false;
   if(Number(result)>=9800000){
-    document.getElementById("potential").innerText = (Number(potential) + 1 + Number((result - 9800000)/200000)).toFixed(2);
+    document.getElementById("potential").innerText = (Number(potential) + Number((result - 9800000)/100000)).toFixed(2);
   }
   else{
-    document.getElementById("potential").innerText = (Number(potential) + Number((result - 9500000)/300000)).toFixed(2);
+    document.getElementById("potential").innerText = (Number(potential) - 2 + Number((result - 9500000)/150000)).toFixed(2);
   }
 }
 
