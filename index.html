@@ -519,6 +519,7 @@ Newsongdata.forEach( item => {
       document.getElementById("level").value = songdata[parseInt(this.getAttribute("data-ID"))][9];
       updateSecondSelect(document.getElementById("level"))
       document.getElementById("song").value = parseInt(this.getAttribute("data-ID"));
+      SongSelected(document.getElementById("song"))
       document.getElementById('Perfect').value = songdata[parseInt(this.getAttribute("data-ID"))][2];
       document.getElementById('Great').value = songdata[parseInt(this.getAttribute("data-ID"))][3];
       document.getElementById('Good').value = songdata[parseInt(this.getAttribute("data-ID"))][4];
