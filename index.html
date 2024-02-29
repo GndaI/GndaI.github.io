@@ -477,10 +477,16 @@ const data = `25,25.25,25시의 정열,725
 31,31,limbo,958
 29,29,レグルス,1014
 28,28,古書屋敷殺人事件,974
-28,28,JUMPIN' OVER!,863`;
-let data3 = data.split('\n').map(item => item.split(','));
+29,29,JUMPIN' OVER!,863`;
+let data2 = data.split('\n').map(item => item.split(',')).slice();
+data2.sort((a, b) => {
+    const numA = a[1];
+    const numB = b[1];
+    if (isNaN(numA)) return -1;
+    if (isNaN(numB)) return 1;
+    return numA - numB;
+});
 let yes = true;
-let data2
 let total = 0;
 let potential = 0;
 let songname = '';
@@ -489,59 +495,76 @@ let result;
 let level;
 let add = 0;
 let songdata
+let newID
 var Right = document.createElement("div");
 Right.classList.add("right");
 Right.textContent = "기록";
 Right.id = "right"
 document.body.appendChild(Right);
+function getID(string){
+    return data2.findIndex((arr) => arr[2] === string)
+}
 if(localStorage.getItem("song") !== null && localStorage.getItem("song") !== undefined && localStorage.getItem("song") !== ''){
     songdata = JSON.parse(localStorage.getItem("song"));
 }
 if(songdata){
-let Newsongdata = songdata.slice()
-Newsongdata.sort((a, b) => b[10] - a[10]);
-let repeat = 0
-Newsongdata.forEach( item => {
-  if(item[1] !== 0 && item[1] !== null){
-    if(repeat < 51){
-        add += parseFloat(item[10])
-        repeat += 1
+    let songdata2 = new Array(1000).fill(0).map(() => new Array(11).fill(0))
+    songdata.forEach(item => {
+        if(item[1] !== 0){
+            newID = getID(item[1])
+            songdata2[newID] = item
+            if(Number(item[7])>=9800000){
+                songdata2[newID][10] = (Number(data2[newID][1]) + Number((item[7] - 9800000)/100000)).toFixed(2);
+            }
+            else{
+                songdata2[newID][10] = (Number(data2[newID][1]) - 2 + Number((item[7] - 9500000)/150000)).toFixed(2);
+            }
+        }
+    })
+    songdata = songdata2
+    let Newsongdata = songdata.slice()
+    Newsongdata.sort((a, b) => b[10] - a[10]);
+    let repeat = 0
+    Newsongdata.forEach( item => {
+    if(item[1] !== 0 && item[1] !== null){
+        if(repeat < 51){
+            add += parseFloat(item[10])
+            repeat += 1
+        }
+        let container = document.createElement("div");
+        let label = document.createElement("label");
+        label.textContent = item[1] + "(" + item[7] + ") => " + item[10];
+        container.classList.add("container");
+        let load = document.createElement("button");
+        let deletebutton = document.createElement("button");
+        load.textContent = "불러오기";
+        load.setAttribute("data-ID", getID(item[1]))
+        load.onclick = function() {
+            document.getElementById("level").value = data2[parseInt(this.getAttribute("data-ID"))][0];
+            updateSecondSelect(document.getElementById("level"))
+            document.getElementById("song").value = parseInt(this.getAttribute("data-ID"));
+            SongSelected(document.getElementById("song"))
+            document.getElementById('Perfect').value = songdata[parseInt(this.getAttribute("data-ID"))][2];
+            document.getElementById('Great').value = songdata[parseInt(this.getAttribute("data-ID"))][3];
+            document.getElementById('Good').value = songdata[parseInt(this.getAttribute("data-ID"))][4];
+            document.getElementById('Bad').value = songdata[parseInt(this.getAttribute("data-ID"))][5];
+            document.getElementById('Miss').value = songdata[parseInt(this.getAttribute("data-ID"))][6];
+            click()
+        }
+        deletebutton.textContent = "삭제"
+        deletebutton.setAttribute("data-ID", getID(item[1]))
+        deletebutton.onclick = function() {
+        if(confirm("정말로 이 기록을 삭제하시겠습니까?")){
+            deletebutton.parentNode.remove();
+            songdata[parseInt(this.getAttribute("data-ID"))].fill(null);
+            localStorage.setItem("song",JSON.stringify(songdata, (key, value) => value === null ? 0 : value))
+        }
+        }
+        container.appendChild(label);
+        container.appendChild(load);
+        container.appendChild(deletebutton);
+        document.getElementById("right").appendChild(container);
     }
-    let container = document.createElement("div");
-    let label = document.createElement("label");
-    label.textContent = item[1] + "(" + item[7] + ") => " + item[10];
-    container.classList.add("container");
-    let load = document.createElement("button");
-    let deletebutton = document.createElement("button");
-    load.textContent = "불러오기";
-    load.setAttribute("data-ID", item[0])
-    load.onclick = function() {
-      document.getElementById("level").value = songdata[parseInt(this.getAttribute("data-ID"))][9];
-      updateSecondSelect(document.getElementById("level"))
-      document.getElementById("song").value = parseInt(this.getAttribute("data-ID"));
-      SongSelected(document.getElementById("song"))
-      document.getElementById('Perfect').value = songdata[parseInt(this.getAttribute("data-ID"))][2];
-      document.getElementById('Great').value = songdata[parseInt(this.getAttribute("data-ID"))][3];
-      document.getElementById('Good').value = songdata[parseInt(this.getAttribute("data-ID"))][4];
-      document.getElementById('Bad').value = songdata[parseInt(this.getAttribute("data-ID"))][5];
-      document.getElementById('Miss').value = songdata[parseInt(this.getAttribute("data-ID"))][6];
-      click()
-      console.log(songdata)
-    }
-    deletebutton.textContent = "삭제"
-    deletebutton.setAttribute("data-ID", item[0])
-    deletebutton.onclick = function() {
-      if(confirm("정말로 이 기록을 삭제하시겠습니까?")){
-        deletebutton.parentNode.remove();
-        songdata[parseInt(this.getAttribute("data-ID"))].fill(null);
-        localStorage.setItem("song",JSON.stringify(songdata, (key, value) => value === null ? 0 : value))
-      }
-    }
-    container.appendChild(label);
-    container.appendChild(load);
-    container.appendChild(deletebutton);
-    document.getElementById("right").appendChild(container);
-  }
 })}
 else{
     songdata = new Array(1000).fill(0).map(() => new Array(11).fill(0))
@@ -566,10 +589,10 @@ function click() {
   }
   document.getElementById("confirm").disabled = false;
   if(Number(result)>=9800000){
-    document.getElementById("potential").innerText = (Number(potential) + 1 + Number((result - 9800000)/200000)).toFixed(2);
+    document.getElementById("potential").innerText = (Number(potential) + Number((result - 9800000)/100000)).toFixed(2);
   }
   else{
-    document.getElementById("potential").innerText = (Number(potential) + Number((result - 9500000)/300000)).toFixed(2);
+    document.getElementById("potential").innerText = (Number(potential) - 2 + Number((result - 9500000)/150000)).toFixed(2);
   }
 }
 
@@ -578,14 +601,6 @@ function updateSecondSelect(select) {
     level = select.value;
     secondSelect.innerHTML = '';
     let repeat = 0;
-    data2 = data3.slice()
-    data2.sort((a, b) => {
-        const numA = a[1];
-        const numB = b[1];
-        if (isNaN(numA)) return -1;
-        if (isNaN(numB)) return 1;
-        return numA - numB;
-    });
     data2.forEach(row => {
         if(data2[repeat][0] === level){
             secondSelect.add(new Option(row[2] + '(' + row[1] + ')', repeat));
